@@ -286,35 +286,35 @@ export default function Home() {
             <div>
               <h3 className="font-semibold mb-3 text-sm">Services</h3>
               <ul className="space-y-2 text-sm text-gray-600">
-                <li><a href="/services" className="hover:text-blue-600">Our Services</a></li>
-                <li><a href="#features" className="hover:text-blue-600">Features</a></li>
-                <li><a href="#" className="hover:text-blue-600">Pricing</a></li>
+                <li><button onClick={() => navigate('/services')} className="hover:text-blue-600 text-left">Our Services</button></li>
+                <li><button onClick={() => window.scrollTo(0, 0)} className="hover:text-blue-600 text-left">Features</button></li>
+                <li><button className="hover:text-blue-600 text-left text-gray-400 cursor-not-allowed">Pricing</button></li>
               </ul>
             </div>
             <div>
               <h3 className="font-semibold mb-3 text-sm">Company</h3>
               <ul className="space-y-2 text-sm text-gray-600">
-                <li><a href="/about" className="hover:text-blue-600">About</a></li>
-                <li><a href="/services" className="hover:text-blue-600">Services</a></li>
-                <li><a href="/blog" className="hover:text-blue-600">Blog</a></li>
-                <li><a href="/contact" className="hover:text-blue-600">Contact</a></li>
+                <li><button onClick={() => navigate('/about')} className="hover:text-blue-600 text-left">About</button></li>
+                <li><button onClick={() => navigate('/services')} className="hover:text-blue-600 text-left">Services</button></li>
+                <li><button onClick={() => navigate('/blog')} className="hover:text-blue-600 text-left">Blog</button></li>
+                <li><button onClick={() => navigate('/contact')} className="hover:text-blue-600 text-left">Contact</button></li>
               </ul>
             </div>
             <div>
               <h3 className="font-semibold mb-3 text-sm">Resources</h3>
               <ul className="space-y-2 text-sm text-gray-600">
-                <li><a href="#" className="hover:text-blue-600">Documentation</a></li>
-                <li><a href="#" className="hover:text-blue-600">Support</a></li>
-                <li><a href="#" className="hover:text-blue-600">Status</a></li>
+                <li><button className="hover:text-blue-600 text-left text-gray-400 cursor-not-allowed">Documentation</button></li>
+                <li><button className="hover:text-blue-600 text-left text-gray-400 cursor-not-allowed">Support</button></li>
+                <li><button className="hover:text-blue-600 text-left text-gray-400 cursor-not-allowed">Status</button></li>
               </ul>
             </div>
           </div>
           <div className="border-t pt-8 flex flex-col sm:flex-row justify-between items-center text-sm text-gray-600">
             <p>&copy; 2026 North Star Operations. All rights reserved.</p>
             <div className="flex gap-6 mt-4 sm:mt-0">
-              <a href="#" className="hover:text-blue-600">Privacy</a>
-              <a href="#" className="hover:text-blue-600">Terms</a>
-              <a href="#" className="hover:text-blue-600">Cookies</a>
+              <button className="hover:text-blue-600 text-gray-400 cursor-not-allowed">Privacy</button>
+              <button className="hover:text-blue-600 text-gray-400 cursor-not-allowed">Terms</button>
+              <button className="hover:text-blue-600 text-gray-400 cursor-not-allowed">Cookies</button>
             </div>
           </div>
         </div>
