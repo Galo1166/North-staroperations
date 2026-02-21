@@ -1,5 +1,5 @@
 // User roles matching RBAC structure
-export type UserRole = 'super_admin' | 'org_admin' | 'analyst' | 'viewer';
+export type UserRole = 'admin' | 'analyst' | 'viewer';
 
 // Organization structure
 export interface Organization {

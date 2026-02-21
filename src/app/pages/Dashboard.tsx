@@ -17,7 +17,7 @@ export default function Dashboard() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold">Welcome back, {user?.name.split(' ')[0]}</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold">Welcome back, {user?.name.split(' ')[0]}</h1>
         <p className="text-muted-foreground mt-1">
           Here's what's happening with your operations today
         </p>
@@ -39,7 +39,7 @@ export default function Dashboard() {
                 <AlertTriangle className="size-5 text-orange-600" />
                 <CardTitle>Stock Alerts</CardTitle>
               </div>
-              <Button variant="ghost" size="sm" onClick={() => navigate('/inventory')}>
+              <Button variant="ghost" size="sm" onClick={() => navigate('/dashboard/inventory')}>
                 View All
                 <ArrowRight className="ml-2 size-4" />
               </Button>
@@ -97,7 +97,7 @@ export default function Dashboard() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle>Recent Transactions</CardTitle>
-            <Button variant="ghost" size="sm" onClick={() => navigate('/inventory')}>
+            <Button variant="ghost" size="sm" onClick={() => navigate('/dashboard/inventory')}>
               View All
               <ArrowRight className="ml-2 size-4" />
             </Button>

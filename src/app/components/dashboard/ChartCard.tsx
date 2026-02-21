@@ -1,6 +1,8 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { ChartDataPoint } from '../../lib/types';
+import { motion } from 'motion/react';
+import { chartContainerVariants } from '../../lib/animations';
 
 interface ChartCardProps {
   title: string;
@@ -10,6 +12,7 @@ interface ChartCardProps {
   dataKey?: string;
   xAxisKey?: string;
   color?: string;
+  index?: number;
 }
 
 export function ChartCard({ 
@@ -19,7 +22,8 @@ export function ChartCard({
   type = 'line',
   dataKey = 'value',
   xAxisKey = 'date',
-  color = '#3b82f6'
+  color = '#3b82f6',
+  index = 0
 }: ChartCardProps) {
   const formatXAxis = (value: string) => {
     if (value.includes('-')) {
@@ -97,16 +101,26 @@ export function ChartCard({
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{title}</CardTitle>
-        {description && <CardDescription>{description}</CardDescription>}
-      </CardHeader>
-      <CardContent>
-        <ResponsiveContainer width="100%" height={300}>
-          {renderChart()}
-        </ResponsiveContainer>
-      </CardContent>
-    </Card>
+    <motion.div
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.3 }}
+      variants={chartContainerVariants}
+      transition={{
+        delay: index * 0.1,
+      }}
+    >
+      <Card>
+        <CardHeader>
+          <CardTitle>{title}</CardTitle>
+          {description && <CardDescription>{description}</CardDescription>}
+        </CardHeader>
+        <CardContent>
+          <ResponsiveContainer width="100%" height={300}>
+            {renderChart()}
+          </ResponsiveContainer>
+        </CardContent>
+      </Card>
+    </motion.div>
   );
 }

@@ -19,6 +19,15 @@ import {
   ArrowRight,
   Check,
 } from 'lucide-react';
+import { motion } from 'motion/react';
+import {
+  containerVariants,
+  featureCardVariants,
+  headingVariants,
+  textVariants,
+  buttonVariants,
+  cardVariants,
+} from '../lib/animations';
 
 export default function Services() {
   const navigate = useNavigate();
@@ -111,68 +120,118 @@ export default function Services() {
 
       {/* Hero */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28">
-        <div className="text-center space-y-6">
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold">
+        <motion.div
+          className="text-center space-y-6"
+          initial="hidden"
+          animate="visible"
+          variants={containerVariants}
+        >
+          <motion.h1
+            className="text-4xl sm:text-5xl lg:text-6xl font-bold"
+            variants={headingVariants}
+          >
             What We
             <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               {' '}Offer
             </span>
-          </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Comprehensive enterprise solutions for operations management, inventory tracking, and real-time analytics. Everything you need to run your business efficiently.
-          </p>
-          <Button
-            size="lg"
-            onClick={() => navigate('/login')}
-            className="gap-2 bg-blue-600 hover:bg-blue-700 mx-auto"
+          </motion.h1>
+          <motion.p
+            className="text-xl text-gray-600 max-w-2xl mx-auto"
+            variants={textVariants}
           >
-            Get Started Today
-            <ArrowRight className="size-5" />
-          </Button>
-        </div>
+            Comprehensive enterprise solutions for operations management, inventory tracking, and real-time analytics. Everything you need to run your business efficiently.
+          </motion.p>
+          <motion.div variants={buttonVariants}>
+            <Button
+              size="lg"
+              onClick={() => navigate('/login')}
+              className="gap-2 bg-blue-600 hover:bg-blue-700 mx-auto"
+            >
+              Get Started Today
+              <ArrowRight className="size-5" />
+            </Button>
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* Main Services */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl font-bold mb-4">Core Services</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+        <motion.div
+          className="text-center mb-16"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={containerVariants}
+        >
+          <motion.h2
+            className="text-3xl sm:text-4xl font-bold mb-4"
+            variants={headingVariants}
+          >
+            Core Services
+          </motion.h2>
+          <motion.p
+            className="text-gray-600 max-w-2xl mx-auto"
+            variants={textVariants}
+          >
             Powerful tools designed to streamline your operations
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <motion.div
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          variants={containerVariants}
+        >
           {mainServices.map((service) => {
             const Icon = service.icon;
             return (
-              <Card key={service.title} className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="size-12 rounded-lg bg-blue-100 flex items-center justify-center mb-4">
-                    <Icon className="size-6 text-blue-600" />
-                  </div>
-                  <CardTitle>{service.title}</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <p className="text-gray-600 text-sm">{service.description}</p>
-                  <ul className="space-y-2">
-                    {service.features.map((feature) => (
-                      <li key={feature} className="flex items-center gap-2 text-sm">
-                        <Check className="size-4 text-green-600 flex-shrink-0" />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
+              <motion.div
+                key={service.title}
+                variants={featureCardVariants}
+                whileHover={{ y: -8 }}
+              >
+                <Card className="hover:shadow-lg transition-shadow h-full">
+                  <CardHeader>
+                    <div className="size-12 rounded-lg bg-blue-100 flex items-center justify-center mb-4">
+                      <motion.div
+                        whileHover={{ scale: 1.15, rotate: 5 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <Icon className="size-6 text-blue-600" />
+                      </motion.div>
+                    </div>
+                    <CardTitle>{service.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <p className="text-gray-600 text-sm">{service.description}</p>
+                    <ul className="space-y-2">
+                      {service.features.map((feature) => (
+                        <li key={feature} className="flex items-center gap-2 text-sm">
+                          <Check className="size-4 text-green-600 flex-shrink-0" />
+                          <span>{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
       </section>
 
       {/* Benefits */}
       <section className="bg-gradient-to-r from-blue-50 to-purple-50 py-20 border-t border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
+          <motion.div
+            className="grid md:grid-cols-2 gap-12 items-center"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            variants={containerVariants}
+          >
             <div className="space-y-6">
               <h2 className="text-3xl sm:text-4xl font-bold">Why Choose North Star Operations?</h2>
               <p className="text-gray-600">
@@ -207,58 +266,109 @@ export default function Services() {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Additional Services */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl font-bold mb-4">Additional Features</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+        <motion.div
+          className="text-center mb-16"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={containerVariants}
+        >
+          <motion.h2
+            className="text-3xl sm:text-4xl font-bold mb-4"
+            variants={headingVariants}
+          >
+            Additional Features
+          </motion.h2>
+          <motion.p
+            className="text-gray-600 max-w-2xl mx-auto"
+            variants={textVariants}
+          >
             Advanced capabilities to enhance your business operations
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <motion.div
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          variants={containerVariants}
+        >
           {additionalServices.map((service) => {
             const Icon = service.icon;
             return (
-              <Card key={service.title}>
-                <CardHeader>
-                  <div className="size-10 rounded-lg bg-blue-100 flex items-center justify-center mb-3">
-                    <Icon className="size-5 text-blue-600" />
-                  </div>
-                  <CardTitle className="text-lg">{service.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 text-sm">{service.description}</p>
-                </CardContent>
-              </Card>
+              <motion.div
+                key={service.title}
+                variants={cardVariants}
+                whileHover={{ y: -4 }}
+              >
+                <Card>
+                  <CardHeader>
+                    <div className="size-10 rounded-lg bg-blue-100 flex items-center justify-center mb-3">
+                      <motion.div
+                        whileHover={{ scale: 1.15, rotate: 5 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <Icon className="size-5 text-blue-600" />
+                      </motion.div>
+                    </div>
+                    <CardTitle className="text-lg">{service.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-gray-600 text-sm">{service.description}</p>
+                  </CardContent>
+                </Card>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
       </section>
 
    
 
       {/* How It Works */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl font-bold mb-4">How It Works</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+        <motion.div
+          className="text-center mb-16"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={containerVariants}
+        >
+          <motion.h2
+            className="text-3xl sm:text-4xl font-bold mb-4"
+            variants={headingVariants}
+          >
+            How It Works
+          </motion.h2>
+          <motion.p
+            className="text-gray-600 max-w-2xl mx-auto"
+            variants={textVariants}
+          >
             Get started in just a few simple steps
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
-        <div className="grid md:grid-cols-4 gap-6">
+        <motion.div
+          className="grid md:grid-cols-4 gap-6"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          variants={containerVariants}
+        >
           {[
             { step: 1, title: 'Sign Up', description: 'Create your account in minutes' },
             { step: 2, title: 'Configure', description: 'Set up dashboards and integrations' },
             { step: 3, title: 'Connect', description: 'Link your data sources' },
             { step: 4, title: 'Monitor', description: 'Start tracking and analyzing' },
           ].map((item) => (
-            <div key={item.step} className="relative">
+            <motion.div key={item.step} className="relative" variants={cardVariants}>
               <Card>
                 <CardContent className="pt-8 text-center space-y-3">
                   <div className="size-10 rounded-full bg-blue-600 text-white flex items-center justify-center mx-auto font-bold text-lg">
@@ -273,30 +383,44 @@ export default function Services() {
                   <ArrowRight className="size-5 text-blue-600" />
                 </div>
               )}
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </section>
 
       {/* CTA */}
       <section className="bg-gradient-to-r from-blue-600 to-purple-600 py-16 sm:py-20 border-t">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
-          <h2 className="text-3xl sm:text-4xl font-bold text-white">
-            Ready to Transform Your Operations?
-          </h2>
-          <p className="text-blue-100 text-lg">
-            Start your free trial today. No credit card required.
-          </p>
-          <Button
-            size="lg"
-            onClick={() => navigate('/login')}
-            variant="secondary"
-            className="gap-2"
+        <motion.div
+          className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={containerVariants}
+        >
+          <motion.h2
+            className="text-3xl sm:text-4xl font-bold text-white"
+            variants={headingVariants}
           >
-            Start Free Trial
-            <ArrowRight className="size-5" />
-          </Button>
-        </div>
+            Ready to Transform Your Operations?
+          </motion.h2>
+          <motion.p
+            className="text-blue-100 text-lg"
+            variants={textVariants}
+          >
+            Start your free trial today. No credit card required.
+          </motion.p>
+          <motion.div variants={buttonVariants}>
+            <Button
+              size="lg"
+              onClick={() => navigate('/login')}
+              variant="secondary"
+              className="gap-2"
+            >
+              Start Free Trial
+              <ArrowRight className="size-5" />
+            </Button>
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* Footer */}

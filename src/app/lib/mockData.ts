@@ -38,7 +38,7 @@ export const mockAllUsers: User[] = [
   {
     id: '1',
     organization_id: '2',
-    role: 'org_admin',
+    role: 'admin',
     email: 'admin@acmecorp.com',
     name: 'John Manager',
     created_at: '2024-01-15T00:00:00Z',

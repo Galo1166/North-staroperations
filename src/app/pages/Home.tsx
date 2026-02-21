@@ -14,6 +14,17 @@ import {
   Lock,
   ArrowRight,
 } from 'lucide-react';
+import { motion } from 'motion/react';
+import {
+  containerVariants,
+  heroTitleVariants,
+  heroImageVariants,
+  buttonVariants,
+  featureCardVariants,
+  statsVariants,
+  textVariants,
+  headingVariants,
+} from '../lib/animations';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -66,42 +77,72 @@ export default function Home() {
       {/* Hero Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-32">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <div className="space-y-8">
+          <motion.div
+            className="space-y-8"
+            initial="hidden"
+            animate="visible"
+            variants={containerVariants}
+          >
             <div className="space-y-4">
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight">
+              <motion.h1
+                className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight"
+                variants={heroTitleVariants}
+              >
                 North Star
-                <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                <motion.span
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.8, delay: 0.2 }}
+                >
                   {' '}Operations
-                </span>
-              </h1>
-              <p className="text-xl text-gray-600 max-w-2xl">
+                </motion.span>
+              </motion.h1>
+              <motion.p
+                className="text-xl text-gray-600 max-w-2xl"
+                variants={textVariants}
+              >
                 Streamline your business operations with real-time dashboards, inventory management, and advanced analytics. Make data-driven decisions with confidence.
-              </p>
+              </motion.p>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button
-                size="lg"
-                onClick={() => navigate('/login')}
-                className="gap-2 bg-blue-600 hover:bg-blue-700"
-              >
-                Get Started
-                <ArrowRight className="size-5" />
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={() => {
-                  document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
-                }}
-              >
-                Learn More
-              </Button>
-            </div>
-          </div>
+            <motion.div
+              className="flex flex-col sm:flex-row gap-4"
+              variants={containerVariants}
+            >
+              <motion.div variants={buttonVariants}>
+                <Button
+                  size="lg"
+                  onClick={() => navigate('/login')}
+                  className="gap-2 bg-blue-600 hover:bg-blue-700 w-full sm:w-auto"
+                >
+                  Get Started
+                  <ArrowRight className="size-5" />
+                </Button>
+              </motion.div>
+              <motion.div variants={buttonVariants}>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  onClick={() => {
+                    document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="w-full sm:w-auto"
+                >
+                  Learn More
+                </Button>
+              </motion.div>
+            </motion.div>
+          </motion.div>
 
           {/* Hero Image */}
-          <div className="relative hidden lg:flex items-center justify-center">
+          <motion.div
+            className="relative hidden lg:flex items-center justify-center"
+            variants={heroImageVariants}
+            initial="hidden"
+            animate="visible"
+            whileHover="hover"
+          >
             <div className="w-full h-96 bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl flex items-center justify-center overflow-hidden shadow-2xl">
               {/* Decorative SVG Illustration */}
               <svg
@@ -138,19 +179,29 @@ export default function Home() {
                 <circle cx="330" cy="300" r="18" fill="#fbbf24" opacity="0.4" />
               </svg>
             </div>
-          </div>
+          </motion.div>
 
           {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16">
+          <motion.div
+            className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
             {stats.map((stat) => (
-              <div key={stat.label} className="text-center">
+              <motion.div
+                key={stat.label}
+                className="text-center"
+                variants={statsVariants}
+              >
                 <div className="text-2xl sm:text-3xl font-bold text-blue-600">
                   {stat.value}
                 </div>
                 <p className="text-sm text-gray-600 mt-1">{stat.label}</p>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -160,37 +211,74 @@ export default function Home() {
         className="bg-white py-20 sm:py-28 border-t"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-4 mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold">Powerful Features</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+          <motion.div
+            className="text-center space-y-4 mb-16"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={containerVariants}
+          >
+            <motion.h2
+              className="text-3xl sm:text-4xl font-bold"
+              variants={headingVariants}
+            >
+              Powerful Features
+            </motion.h2>
+            <motion.p
+              className="text-gray-600 max-w-2xl mx-auto"
+              variants={textVariants}
+            >
               Everything you need to manage your operations efficiently
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <motion.div
+            className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={containerVariants}
+          >
             {features.map((feature) => {
               const Icon = feature.icon;
               return (
-                <Card key={feature.title} className="hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <div className="size-12 rounded-lg bg-blue-100 flex items-center justify-center mb-4">
-                      <Icon className="size-6 text-blue-600" />
-                    </div>
-                    <CardTitle>{feature.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-600">{feature.description}</p>
-                  </CardContent>
-                </Card>
+                <motion.div
+                  key={feature.title}
+                  variants={featureCardVariants}
+                  whileHover={{ y: -8 }}
+                >
+                  <Card className="hover:shadow-lg transition-shadow h-full">
+                    <CardHeader>
+                      <div className="size-12 rounded-lg bg-blue-100 flex items-center justify-center mb-4">
+                        <motion.div
+                          whileHover={{ scale: 1.15, rotate: 5 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <Icon className="size-6 text-blue-600" />
+                        </motion.div>
+                      </div>
+                      <CardTitle>{feature.title}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-gray-600">{feature.description}</p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
               );
             })}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Security Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
+        <motion.div
+          className="grid md:grid-cols-2 gap-12 items-center"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+          variants={containerVariants}
+        >
           <div className="space-y-6">
             <h2 className="text-3xl sm:text-4xl font-bold">Enterprise Security</h2>
             <div className="space-y-4">
@@ -249,7 +337,7 @@ export default function Home() {
               </div>
             </CardContent>
           </Card>
-        </div>
+        </motion.div>
       </section>
 
       {/* CTA Section */}

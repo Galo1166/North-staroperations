@@ -1,15 +1,16 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate, Link } from 'react-router';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../ui/card';
 import { Alert, AlertDescription } from '../ui/alert';
-import { login } from '../../lib/auth';
+import { useAuth } from '../../lib/AuthContext';
 import { Building2, AlertCircle } from 'lucide-react';
 
 export function LoginForm() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -20,17 +21,15 @@ export function LoginForm() {
     setError('');
     setLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      const user = login(email, password);
-      
-      if (user) {
-        navigate('/dashboard/main');
-      } else {
-        setError('Invalid credentials. Try: admin@acmecorp.com / password');
-      }
+    try {
+      await login(email, password);
+      navigate('/dashboard/main');
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Invalid credentials. Please try again.';
+      setError(message);
+    } finally {
       setLoading(false);
-    }, 500);
+    }
   };
 
   return (
@@ -79,21 +78,21 @@ export function LoginForm() {
             />
           </div>
 
-          <div className="text-sm text-muted-foreground">
-            <p className="mb-2">Demo accounts:</p>
-            <ul className="space-y-1 text-xs">
-              <li>• Admin: admin@acmecorp.com</li>
-              <li>• Analyst: analyst@acmecorp.com</li>
-              <li>• Viewer: viewer@acmecorp.com</li>
-              <li className="mt-1">Password: <span className="font-mono">password</span></li>
-            </ul>
-          </div>
+          <p className="text-xs text-muted-foreground text-center">
+            Sign in with your organization credentials
+          </p>
         </CardContent>
         
-        <CardFooter className="flex flex-col space-y-2">
+        <CardFooter className="flex flex-col space-y-3">
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? 'Signing in...' : 'Sign In'}
           </Button>
+          <p className="text-sm text-center text-muted-foreground">
+            Don't have an account?{' '}
+            <Link to="/signup" className="text-blue-600 hover:underline font-medium">
+              Sign up
+            </Link>
+          </p>
           <Button
             type="button"
             variant="ghost"

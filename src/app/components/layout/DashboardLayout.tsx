@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
 import { Badge } from '../ui/badge';
-import { getCurrentUser, logout, canAccessAdmin } from '../../lib/auth';
+import { useAuth } from '../../lib/AuthContext';
 import { NorthStarLogo } from '../NorthStarLogo';
 import {
   LayoutDashboard,
@@ -22,7 +22,7 @@ import {
   Bell,
 } from 'lucide-react';
 import { useState } from 'react';
-import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '../ui/sheet';
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard/main', icon: LayoutDashboard },
@@ -37,17 +37,17 @@ const adminNavigation = [
 export function DashboardLayout() {
   const navigate = useNavigate();
   const location = useLocation();
-  const user = getCurrentUser();
+  const { user, logout, canAccessAdmin } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     navigate('/');
   };
 
   const allNavigation = [
     ...navigation,
-    ...(canAccessAdmin() ? adminNavigation : []),
+    ...(canAccessAdmin ? adminNavigation : []),
   ];
 
   const NavLinks = () => (
@@ -73,7 +73,6 @@ export function DashboardLayout() {
   );
 
   if (!user) {
-    navigate('/login');
     return null;
   }
 
@@ -89,7 +88,8 @@ export function DashboardLayout() {
                 <Menu className="size-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-64">
+            <SheetContent side="left" className="w-64" aria-describedby={undefined}>
+              <SheetTitle className="sr-only">Dashboard Navigation</SheetTitle>
               <div className="flex flex-col gap-4 mt-4">
                 <NavLinks />
               </div>
@@ -162,7 +162,7 @@ export function DashboardLayout() {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 p-4 md:p-6">
+        <main className="flex-1 min-w-0 p-4 md:p-6">
           <Outlet />
         </main>
       </div>

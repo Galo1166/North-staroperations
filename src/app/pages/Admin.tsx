@@ -30,13 +30,13 @@ import {
 import { Label } from '../components/ui/label';
 import { mockAllUsers, mockAuditLogs } from '../lib/mockData';
 import { Users, Plus, Search, UserPlus, Shield, Eye, Edit, Trash2 } from 'lucide-react';
-import { getCurrentUser } from '../lib/auth';
+import { useAuth } from '../lib/AuthContext';
 
 export default function Admin() {
   const [searchQuery, setSearchQuery] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
   const [dialogOpen, setDialogOpen] = useState(false);
-  const currentUser = getCurrentUser();
+  const { user: currentUser } = useAuth();
 
   const filteredUsers = mockAllUsers.filter((user) => {
     const matchesSearch = 
@@ -49,8 +49,7 @@ export default function Admin() {
 
   const getRoleIcon = (role: string) => {
     switch (role) {
-      case 'super_admin':
-      case 'org_admin':
+      case 'admin':
         return <Shield className="size-4" />;
       case 'analyst':
         return <Edit className="size-4" />;
@@ -63,9 +62,7 @@ export default function Admin() {
 
   const getRoleColor = (role: string) => {
     switch (role) {
-      case 'super_admin':
-        return 'bg-purple-100 text-purple-800';
-      case 'org_admin':
+      case 'admin':
         return 'bg-blue-100 text-blue-800';
       case 'analyst':
         return 'bg-green-100 text-green-800';
@@ -79,17 +76,15 @@ export default function Admin() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-          <p className="text-muted-foreground mt-1">
-            Manage users, data, and system settings
-          </p>
-        </div>
+      <div>
+        <h1 className="text-2xl sm:text-3xl font-bold">Admin Dashboard</h1>
+        <p className="text-muted-foreground mt-1">
+          Manage users, data, and system settings
+        </p>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-4">
+      <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Users</CardTitle>
@@ -159,7 +154,7 @@ export default function Admin() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Roles</SelectItem>
-                  <SelectItem value="org_admin">Admin</SelectItem>
+                  <SelectItem value="admin">Admin</SelectItem>
                   <SelectItem value="analyst">Analyst</SelectItem>
                   <SelectItem value="viewer">Viewer</SelectItem>
                 </SelectContent>
@@ -194,7 +189,7 @@ export default function Admin() {
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="org_admin">Organization Admin</SelectItem>
+                          <SelectItem value="admin">Admin</SelectItem>
                           <SelectItem value="analyst">Analyst</SelectItem>
                           <SelectItem value="viewer">Viewer</SelectItem>
                         </SelectContent>
@@ -216,8 +211,8 @@ export default function Admin() {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="rounded-md border">
-            <Table>
+          <div className="rounded-md border overflow-x-auto">
+            <Table className="min-w-[600px]">
               <TableHeader>
                 <TableRow>
                   <TableHead>Name</TableHead>

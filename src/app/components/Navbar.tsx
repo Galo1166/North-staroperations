@@ -3,7 +3,7 @@ import { Button } from './ui/button';
 import { NorthStarLogo } from './NorthStarLogo';
 import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
-import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from './ui/sheet';
 
 export function Navbar() {
   const navigate = useNavigate();
@@ -71,7 +71,8 @@ export function Navbar() {
                 {mobileMenuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-64">
+            <SheetContent side="right" className="w-64" aria-describedby={undefined}>
+              <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
               <nav className="flex flex-col gap-4 mt-8">
                 {navItems.map((item) => (
                   <button

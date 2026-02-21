@@ -27,14 +27,14 @@ export default function Operations() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Operations Analytics</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold">Operations Analytics</h1>
           <p className="text-muted-foreground mt-1">
             Track and optimize operational performance
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Select value={dateRange} onValueChange={setDateRange}>
             <SelectTrigger className="w-36">
               <Calendar className="mr-2 size-4" />
@@ -82,10 +82,10 @@ export default function Operations() {
       {/* Department Metrics */}
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <CardTitle>Department Metrics</CardTitle>
             <Select value={department} onValueChange={setDepartment}>
-              <SelectTrigger className="w-48">
+              <SelectTrigger className="w-full sm:w-48">
                 <SelectValue placeholder="Select department" />
               </SelectTrigger>
               <SelectContent>
@@ -103,7 +103,7 @@ export default function Operations() {
             {mockOperationalMetrics
               .filter(metric => department === 'all' || metric.department === department)
               .map((metric) => (
-                <div key={metric.id} className="flex items-center justify-between p-4 border rounded-lg">
+                <div key={metric.id} className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 border rounded-lg">
                   <div className="flex items-center gap-3">
                     <div className="p-2 bg-blue-100 rounded-lg">
                       <Activity className="size-5 text-blue-600" />
@@ -115,7 +115,7 @@ export default function Operations() {
                       </p>
                     </div>
                   </div>
-                  <div className="text-right">
+                  <div className="sm:text-right">
                     <p className="text-2xl font-bold">
                       {metric.value}
                       {metric.unit && <span className="text-lg text-muted-foreground ml-1">{metric.unit}</span>}

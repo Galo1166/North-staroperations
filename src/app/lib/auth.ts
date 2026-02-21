@@ -4,33 +4,25 @@ import { User, UserRole } from './types';
 let currentUser: User | null = null;
 
 export const mockUsers = {
-  super_admin: {
+  admin: {
     id: '1',
     organization_id: '1',
-    role: 'super_admin' as UserRole,
-    email: 'admin@analytics.tech',
-    name: 'System Administrator',
-    created_at: '2024-01-01T00:00:00Z',
-  },
-  org_admin: {
-    id: '2',
-    organization_id: '2',
-    role: 'org_admin' as UserRole,
+    role: 'admin' as UserRole,
     email: 'admin@acmecorp.com',
     name: 'John Manager',
-    created_at: '2024-01-15T00:00:00Z',
+    created_at: '2024-01-01T00:00:00Z',
   },
   analyst: {
-    id: '3',
-    organization_id: '2',
+    id: '2',
+    organization_id: '1',
     role: 'analyst' as UserRole,
     email: 'analyst@acmecorp.com',
     name: 'Sarah Analyst',
     created_at: '2024-02-01T00:00:00Z',
   },
   viewer: {
-    id: '4',
-    organization_id: '2',
+    id: '3',
+    organization_id: '1',
     role: 'viewer' as UserRole,
     email: 'viewer@acmecorp.com',
     name: 'Mike Viewer',
@@ -79,19 +71,19 @@ export function hasRole(role: UserRole | UserRole[]): boolean {
 }
 
 export function canAccessAdmin(): boolean {
-  return hasRole(['super_admin', 'org_admin']);
+  return hasRole('admin');
 }
 
 export function canManageUsers(): boolean {
-  return hasRole(['super_admin', 'org_admin']);
+  return hasRole('admin');
 }
 
 export function canUploadData(): boolean {
-  return hasRole(['super_admin', 'org_admin']);
+  return hasRole('admin');
 }
 
 export function canEditInventory(): boolean {
-  return hasRole(['super_admin', 'org_admin', 'analyst']);
+  return hasRole(['admin', 'analyst']);
 }
 
 export function canViewReports(): boolean {
