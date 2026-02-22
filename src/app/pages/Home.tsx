@@ -405,6 +405,9 @@ export default function Home() {
               <button className="hover:text-blue-600 text-gray-400 cursor-not-allowed">Cookies</button>
             </div>
           </div>
+          <div className="border-t mt-8 pt-4 text-center text-sm text-gray-500">
+            <p>Developed by <a href="https://GALOTECH.TECH" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 font-medium">Galotech</a></p>
+          </div>
         </div>
       </footer>
     </div>

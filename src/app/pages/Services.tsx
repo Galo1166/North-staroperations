@@ -430,6 +430,9 @@ export default function Services() {
             <NorthStarLogo className="h-12" />
             <p className="text-sm text-gray-600">&copy; 2026 North Star Operations. All rights reserved.</p>
           </div>
+          <div className="border-t mt-8 pt-4 text-center text-sm text-gray-500">
+            <p>Developed by <a href="https://GALOTECH.TECH" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 font-medium">Galotech</a></p>
+          </div>
         </div>
       </footer>
     </div>
