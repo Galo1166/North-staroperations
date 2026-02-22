@@ -99,6 +99,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       password,
       options: {
         data: { name, role },
+        emailRedirectTo: 'https://north-staroperations.com',
       },
     });
     if (error) throw error;

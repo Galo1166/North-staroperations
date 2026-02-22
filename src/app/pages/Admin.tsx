@@ -180,7 +180,7 @@ export default function Admin() {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="email">Email</Label>
-                      <Input id="email" type="email" placeholder="john@acmecorp.com" />
+                      <Input id="email" type="email" placeholder="john@north-staroperations.com" />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="role">Role</Label>

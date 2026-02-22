@@ -5,15 +5,7 @@ import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../ui/card';
 import { Alert, AlertDescription } from '../ui/alert';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../ui/select';
 import { useAuth } from '../../lib/AuthContext';
-import type { UserRole } from '../../lib/types';
 import { Building2, AlertCircle, CheckCircle2 } from 'lucide-react';
 
 export function SignupForm() {
@@ -23,7 +15,6 @@ export function SignupForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [role, setRole] = useState<UserRole>('viewer');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -51,7 +42,7 @@ export function SignupForm() {
     setLoading(true);
 
     try {
-      await signup(email, password, name, role);
+      await signup(email, password, name);
       setSuccess(true);
       // Auto-redirect after showing success
       setTimeout(() => navigate('/login'), 2000);
@@ -154,23 +145,6 @@ export function SignupForm() {
               required
               minLength={6}
             />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="role">Role</Label>
-            <Select value={role} onValueChange={(val) => setRole(val as UserRole)}>
-              <SelectTrigger id="role">
-                <SelectValue placeholder="Select a role" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="admin">Admin</SelectItem>
-                <SelectItem value="analyst">Analyst</SelectItem>
-                <SelectItem value="viewer">Viewer</SelectItem>
-              </SelectContent>
-            </Select>
-            <p className="text-xs text-muted-foreground">
-              Choose the access level for your account
-            </p>
           </div>
         </CardContent>
 

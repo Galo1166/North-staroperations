@@ -59,7 +59,7 @@ export function LoginForm() {
             <Input
               id="email"
               type="email"
-              placeholder="admin@acmecorp.com"
+              placeholder="admin@north-staroperations.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required

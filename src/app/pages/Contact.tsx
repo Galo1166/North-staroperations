@@ -19,25 +19,29 @@ export default function Contact() {
       icon: Mail,
       title: 'Email',
       description: 'Send us an email anytime',
-      value: 'info@northstarops.com',
+      value: 'info@north-staroperations.com',
+      href: 'mailto:info@north-staroperations.com',
     },
     {
       icon: Phone,
       title: 'Phone',
       description: 'Call us during business hours',
       value: '+1 (555) 123-4567',
+      href: 'tel:+15551234567',
     },
     {
       icon: MapPin,
       title: 'Office',
       description: 'Visit us in person',
       value: '123 Operations Ave, Suite 100, Tech City, TC 12345',
+      href: 'https://www.google.com/maps/search/?api=1&query=123+Operations+Ave+Suite+100+Tech+City+TC+12345',
     },
     {
       icon: Clock,
       title: 'Hours',
       description: 'Available when you need us',
       value: 'Mon-Fri: 9AM-6PM EST',
+      href: null,
     },
   ];
 
@@ -92,7 +96,18 @@ export default function Contact() {
                 </CardHeader>
                 <CardContent className="space-y-2">
                   <p className="text-sm text-gray-600">{method.description}</p>
-                  <p className="font-medium text-blue-600">{method.value}</p>
+                  {method.href ? (
+                    <a
+                      href={method.href}
+                      target={method.href.startsWith('http') ? '_blank' : undefined}
+                      rel={method.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                      className="font-medium text-blue-600 hover:text-blue-800 hover:underline inline-block transition-colors"
+                    >
+                      {method.value}
+                    </a>
+                  ) : (
+                    <p className="font-medium text-blue-600">{method.value}</p>
+                  )}
                 </CardContent>
               </Card>
             );
