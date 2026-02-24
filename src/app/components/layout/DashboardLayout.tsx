@@ -42,7 +42,8 @@ export function DashboardLayout() {
 
   const handleLogout = async () => {
     await logout();
-    navigate('/');
+    // Navigate to home page (not login)
+    window.location.href = '/';
   };
 
   const allNavigation = [
