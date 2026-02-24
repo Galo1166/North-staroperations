@@ -1,5 +1,14 @@
 import { createContext, useContext, useEffect, useState, useCallback } from 'react';
-import { supabase } from './supabase';
+import {
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+  updateProfile,
+  type User as FirebaseUser,
+} from 'firebase/auth';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { auth, db } from './firebase';
 import type { User, UserRole } from './types';
 
 // ─── Types ──────────────────────────────────────────────────────
@@ -25,106 +34,81 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Build user from Supabase auth session + profiles table (if available)
-  const buildUser = useCallback(async (authUser: { id: string; email?: string; user_metadata?: Record<string, string> }): Promise<User> => {
-    // Try profiles table first
+  // Build app User from Firebase auth user + Firestore profile (if available)
+  const buildUser = useCallback(async (firebaseUser: FirebaseUser): Promise<User> => {
+    // Try Firestore profiles collection first
     try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', authUser.id)
-        .maybeSingle();
+      const profileRef = doc(db, 'profiles', firebaseUser.uid);
+      const profileSnap = await getDoc(profileRef);
 
-      if (!error && data) {
-        return data as User;
+      if (profileSnap.exists()) {
+        return profileSnap.data() as User;
       }
     } catch {
-      // profiles table likely doesn't exist — that's fine
+      // profiles collection likely doesn't exist — that's fine
     }
 
-    // Fallback: build user from Supabase auth metadata
-    const email = authUser.email ?? '';
-    const meta = authUser.user_metadata ?? {};
+    // Fallback: build user from Firebase auth data
+    const email = firebaseUser.email ?? '';
     return {
-      id: authUser.id,
+      id: firebaseUser.uid,
       organization_id: '',
-      role: (meta.role as UserRole) || 'admin',
+      role: 'admin' as UserRole,
       email,
-      name: meta.name || email.split('@')[0],
+      name: firebaseUser.displayName || email.split('@')[0],
       created_at: new Date().toISOString(),
     };
   }, []);
 
-  // Initialize: check existing session
+  // Initialize: listen for auth state changes
   useEffect(() => {
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      if (session?.user) {
-        const profile = await buildUser(session.user);
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        const profile = await buildUser(firebaseUser);
         setUser(profile);
+      } else {
+        setUser(null);
       }
       setLoading(false);
     });
 
-    // Listen for auth state changes (login, logout, token refresh)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
-        if (session?.user) {
-          const profile = await buildUser(session.user);
-          setUser(profile);
-        } else {
-          setUser(null);
-        }
-      }
-    );
-
-    return () => subscription.unsubscribe();
+    return () => unsubscribe();
   }, [buildUser]);
 
   // Login
   const login = useCallback(async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) throw error;
+    const { user: firebaseUser } = await signInWithEmailAndPassword(auth, email, password);
 
     // Build and set user immediately so navigation works
-    if (data.user) {
-      const profile = await buildUser(data.user);
-      setUser(profile);
-    }
+    const profile = await buildUser(firebaseUser);
+    setUser(profile);
   }, [buildUser]);
 
-  // Signup — stores name/role in auth metadata (profiles table is optional)
+  // Signup — stores name/role in Firestore profiles collection
   const signup = useCallback(async (email: string, password: string, name: string, role: UserRole = 'viewer') => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { name, role },
-        emailRedirectTo: 'https://north-staroperations.com',
-      },
-    });
-    if (error) throw error;
+    const { user: firebaseUser } = await createUserWithEmailAndPassword(auth, email, password);
 
-    // Optionally insert into profiles table (won't break if table doesn't exist)
+    // Set display name on Firebase auth profile
+    await updateProfile(firebaseUser, { displayName: name });
+
+    // Optionally save to Firestore profiles collection (won't break if permissions aren't set)
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) {
-        await supabase.from('profiles').insert({
-          id: session.user.id,
-          email,
-          name,
-          role,
-          organization_id: null,
-        });
-      }
+      await setDoc(doc(db, 'profiles', firebaseUser.uid), {
+        id: firebaseUser.uid,
+        email,
+        name,
+        role,
+        organization_id: null,
+        created_at: new Date().toISOString(),
+      });
     } catch {
-      // profiles table not set up yet — that's okay
+      // Firestore profiles collection not set up yet — that's okay
     }
   }, []);
 
   // Logout
   const logout = useCallback(async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
+    await signOut(auth);
     setUser(null);
   }, []);
 

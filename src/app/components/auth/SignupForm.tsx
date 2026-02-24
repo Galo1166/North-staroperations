@@ -83,9 +83,9 @@ export function SignupForm() {
             <Building2 className="size-7 text-white" />
           </div>
         </div>
-        <CardTitle className="text-2xl text-center">Create Account</CardTitle>
+        <CardTitle className="text-2xl text-center">North Star Operations</CardTitle>
         <CardDescription className="text-center">
-          Sign up to get started with North Star Operations
+          Create an account to get started
         </CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
