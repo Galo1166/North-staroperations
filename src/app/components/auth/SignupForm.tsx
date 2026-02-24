@@ -6,7 +6,7 @@ import { Label } from '../ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../ui/card';
 import { Alert, AlertDescription } from '../ui/alert';
 import { useAuth } from '../../lib/AuthContext';
-import { AlertCircle, CheckCircle2 } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Home } from 'lucide-react';
 import { NorthStarLogo } from '../NorthStarLogo';
 
 export function SignupForm() {
@@ -79,9 +79,9 @@ export function SignupForm() {
   return (
     <Card className="w-full max-w-md">
       <CardHeader className="space-y-1">
-        <div className="flex items-center justify-center mb-4">
+        <Link to="/" className="flex items-center justify-center mb-4 hover:opacity-80 transition-opacity">
           <NorthStarLogo className="h-14" />
-        </div>
+        </Link>
         <CardTitle className="text-2xl text-center">North Star Operations</CardTitle>
         <CardDescription className="text-center">
           Create an account to get started
@@ -157,6 +157,10 @@ export function SignupForm() {
               Sign in
             </Link>
           </p>
+          <Link to="/" className="flex items-center justify-center gap-1 text-sm text-muted-foreground hover:text-blue-600 transition-colors">
+            <Home className="size-4" />
+            Back to Home
+          </Link>
         </CardFooter>
       </form>
     </Card>
