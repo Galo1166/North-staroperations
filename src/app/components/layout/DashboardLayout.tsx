@@ -41,9 +41,9 @@ export function DashboardLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleLogout = async () => {
-    await logout();
-    // Navigate to home page (not login)
+    // Navigate first, then logout — avoids flashing the login screen
     window.location.href = '/';
+    logout();
   };
 
   const allNavigation = [

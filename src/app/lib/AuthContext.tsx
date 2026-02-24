@@ -117,8 +117,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Logout
   const logout = useCallback(async () => {
-    await signOut(auth);
+    // Set loading so ProtectedRoute shows splash instead of redirecting to /login
+    setLoading(true);
     setUser(null);
+    await signOut(auth);
   }, []);
 
   // Role helpers
