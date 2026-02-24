@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { NorthStarLogo } from '../components/NorthStarLogo';
 import { Navbar } from '../components/Navbar';
+import { Footer } from '../components/Footer';
 import {
   BarChart3,
   Package,
@@ -423,18 +423,7 @@ export default function Services() {
         </motion.div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t bg-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center">
-            <NorthStarLogo className="h-12" />
-            <p className="text-sm text-gray-600">&copy; 2026 North Star Operations. All rights reserved.</p>
-          </div>
-          <div className="border-t mt-8 pt-4 text-center text-sm text-gray-500">
-            <p>Developed by <a href="https://GALOTECH.TECH" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 font-medium">Galotech</a></p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

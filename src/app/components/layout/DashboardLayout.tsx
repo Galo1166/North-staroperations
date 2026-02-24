@@ -146,7 +146,7 @@ export function DashboardLayout() {
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => navigate('/settings')}>
+              <DropdownMenuItem onClick={() => navigate('/dashboard/settings')}>
                 <Settings className="mr-2 size-4" />
                 Settings
               </DropdownMenuItem>

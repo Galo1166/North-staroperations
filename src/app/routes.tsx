@@ -9,10 +9,15 @@ import Blog from './pages/Blog';
 import Contact from './pages/Contact';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import ForgotPassword from './pages/ForgotPassword';
+import Privacy from './pages/Privacy';
+import Terms from './pages/Terms';
+import NotFound from './pages/NotFound';
 import Dashboard from './pages/Dashboard';
 import Inventory from './pages/Inventory';
 import Operations from './pages/Operations';
 import Admin from './pages/Admin';
+import Settings from './pages/Settings';
 import { useAuth } from './lib/AuthContext';
 
 // Branded loading splash
@@ -95,6 +100,18 @@ export const router = createBrowserRouter([
         element: <Signup />,
       },
       {
+        path: '/forgot-password',
+        element: <ForgotPassword />,
+      },
+      {
+        path: '/privacy',
+        element: <Privacy />,
+      },
+      {
+        path: '/terms',
+        element: <Terms />,
+      },
+      {
         path: '/dashboard',
         element: (
           <ProtectedRoute>
@@ -135,10 +152,18 @@ export const router = createBrowserRouter([
             ),
           },
           {
+            path: 'settings',
+            element: <Settings />,
+          },
+          {
             path: '*',
             element: <Navigate to="/dashboard/main" replace />,
           },
         ],
+      },
+      {
+        path: '*',
+        element: <NotFound />,
       },
     ],
   },

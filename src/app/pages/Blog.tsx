@@ -1,8 +1,9 @@
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { NorthStarLogo } from '../components/NorthStarLogo';
 import { Navbar } from '../components/Navbar';
 import { Calendar } from 'lucide-react';
+import { useState } from 'react';
+import { Footer } from '../components/Footer';
 
 export default function Blog() {
   const posts = [
@@ -72,8 +73,14 @@ export default function Blog() {
     'Tutorials',
   ];
 
+  const [activeCategory, setActiveCategory] = useState('All Posts');
+
+  const filteredPosts = activeCategory === 'All Posts'
+    ? posts
+    : posts.filter(post => post.category === activeCategory);
+
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white flex flex-col">
       {/* Navigation */}
       <Navbar />
 
@@ -98,9 +105,10 @@ export default function Blog() {
           {categories.map((cat) => (
             <Button
               key={cat}
-              variant={cat === 'All Posts' ? 'default' : 'outline'}
+              variant={activeCategory === cat ? 'default' : 'outline'}
               size="sm"
               className="rounded-full"
+              onClick={() => setActiveCategory(cat)}
             >
               {cat}
             </Button>
@@ -111,7 +119,7 @@ export default function Blog() {
       {/* Posts Grid */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {posts.map((post) => (
+          {filteredPosts.map((post) => (
             <Card
               key={post.id}
               className="hover:shadow-lg transition-shadow cursor-pointer group"
@@ -164,18 +172,7 @@ export default function Blog() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t bg-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center">
-            <NorthStarLogo className="h-12" />
-            <p className="text-sm text-gray-600">&copy; 2026 North Star Operations. All rights reserved.</p>
-          </div>
-          <div className="border-t mt-8 pt-4 text-center text-sm text-gray-500">
-            <p>Developed by <a href="https://GALOTECH.TECH" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 font-medium">Galotech</a></p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

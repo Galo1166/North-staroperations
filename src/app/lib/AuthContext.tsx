@@ -40,7 +40,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return {
       id: firebaseUser.uid,
       organization_id: '',
-      role: 'admin' as UserRole,
+      role: 'viewer' as UserRole,
       email,
       name: firebaseUser.displayName || email.split('@')[0],
       created_at: new Date().toISOString(),
