@@ -21,9 +21,11 @@ import {
 import { ChartCard } from '../components/dashboard/ChartCard';
 import { mockInventoryItems, mockStockAlerts, mockStockMovementChart, mockTopMovingItems } from '../lib/mockData';
 import { Package, Search, Download, AlertTriangle, Plus, Filter } from 'lucide-react';
-import { canEditInventory } from '../lib/auth';
+import { useAuth } from '../lib/AuthContext';
 
 export default function Inventory() {
+  const { hasRole } = useAuth();
+  const canEditInventory = hasRole(['admin', 'analyst']);
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [locationFilter, setLocationFilter] = useState('all');
@@ -63,7 +65,7 @@ export default function Inventory() {
             <Download className="mr-2 size-4" />
             Export
           </Button>
-          {canEditInventory() && (
+          {canEditInventory && (
             <Button>
               <Plus className="mr-2 size-4" />
               Add Item

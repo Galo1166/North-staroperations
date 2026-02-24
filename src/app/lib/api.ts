@@ -1,79 +1,81 @@
-import { supabase } from './supabase';
+import { db } from './firebase';
+import {
+  collection,
+  doc,
+  getDocs,
+  getDoc,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  query,
+  where,
+  orderBy,
+  limit,
+  Timestamp,
+} from 'firebase/firestore';
 import type { InventoryItem, OperationalMetric, DashboardOverview, ChartDataPoint } from './types';
 
 // ─── Inventory API ──────────────────────────────────────────────
 
+const inventoryCol = () => collection(db, 'inventory_items');
+const operationsCol = () => collection(db, 'operations');
+const profilesCol = () => collection(db, 'profiles');
+
 export const inventoryApi = {
-  async getAll() {
-    const { data, error } = await supabase
-      .from('inventory_items')
-      .select('*')
-      .order('created_at', { ascending: false });
-    if (error) throw error;
-    return data as InventoryItem[];
+  async getAll(): Promise<InventoryItem[]> {
+    const q = query(inventoryCol(), orderBy('created_at', 'desc'));
+    const snap = await getDocs(q);
+    return snap.docs.map(d => ({ id: d.id, ...d.data() } as InventoryItem));
   },
 
-  async getById(id: string) {
-    const { data, error } = await supabase
-      .from('inventory_items')
-      .select('*')
-      .eq('id', id)
-      .single();
-    if (error) throw error;
-    return data as InventoryItem;
+  async getById(id: string): Promise<InventoryItem> {
+    const snap = await getDoc(doc(db, 'inventory_items', id));
+    if (!snap.exists()) throw new Error('Item not found');
+    return { id: snap.id, ...snap.data() } as InventoryItem;
   },
 
-  async create(item: Omit<InventoryItem, 'id'>) {
-    const { data, error } = await supabase
-      .from('inventory_items')
-      .insert(item)
-      .select()
-      .single();
-    if (error) throw error;
-    return data as InventoryItem;
+  async create(item: Omit<InventoryItem, 'id'>): Promise<InventoryItem> {
+    const docRef = await addDoc(inventoryCol(), item);
+    return { id: docRef.id, ...item } as InventoryItem;
   },
 
-  async update(id: string, updates: Partial<InventoryItem>) {
-    const { data, error } = await supabase
-      .from('inventory_items')
-      .update(updates)
-      .eq('id', id)
-      .select()
-      .single();
-    if (error) throw error;
-    return data as InventoryItem;
+  async update(id: string, updates: Partial<InventoryItem>): Promise<InventoryItem> {
+    const ref = doc(db, 'inventory_items', id);
+    await updateDoc(ref, updates);
+    const snap = await getDoc(ref);
+    return { id: snap.id, ...snap.data() } as InventoryItem;
   },
 
-  async delete(id: string) {
-    const { error } = await supabase
-      .from('inventory_items')
-      .delete()
-      .eq('id', id);
-    if (error) throw error;
+  async delete(id: string): Promise<void> {
+    await deleteDoc(doc(db, 'inventory_items', id));
   },
 
-  async search(query: string) {
-    const { data, error } = await supabase
-      .from('inventory_items')
-      .select('*')
-      .or(`name.ilike.%${query}%,sku.ilike.%${query}%,category.ilike.%${query}%`)
-      .order('created_at', { ascending: false });
-    if (error) throw error;
-    return data as InventoryItem[];
+  async search(searchQuery: string): Promise<InventoryItem[]> {
+    // Firestore doesn't support full-text search natively,
+    // so we fetch all and filter client-side (or use Algolia/Typesense in production)
+    const all = await this.getAll();
+    const q = searchQuery.toLowerCase();
+    return all.filter(
+      item =>
+        item.name.toLowerCase().includes(q) ||
+        item.sku.toLowerCase().includes(q) ||
+        item.category.toLowerCase().includes(q)
+    );
   },
 };
 
 // ─── Operations API ─────────────────────────────────────────────
 
 export const operationsApi = {
-  async getAll(filters?: { department?: string; dateRange?: string }) {
-    let query = supabase
-      .from('operations')
-      .select('*')
-      .order('created_at', { ascending: false });
+  async getAll(filters?: { department?: string; dateRange?: string }): Promise<OperationalMetric[]> {
+    let q = query(operationsCol(), orderBy('created_at', 'desc'));
 
+    const snap = await getDocs(q);
+    let results = snap.docs.map(d => ({ id: d.id, ...d.data() } as OperationalMetric));
+
+    // Client-side filtering (Firestore compound queries require indexes)
     if (filters?.department && filters.department !== 'all') {
-      query = query.eq('department', filters.department);
+      results = results.filter(r => (r as any).department === filters.department);
     }
 
     if (filters?.dateRange && filters.dateRange !== 'all') {
@@ -92,21 +94,16 @@ export const operationsApi = {
         default:
           fromDate = new Date(0);
       }
-      query = query.gte('created_at', fromDate.toISOString());
+      results = results.filter(r => new Date(r.recorded_at) >= fromDate);
     }
 
-    const { data, error } = await query;
-    if (error) throw error;
-    return data as OperationalMetric[];
+    return results;
   },
 
-  async getMetrics() {
-    const { data, error } = await supabase
-      .from('operations')
-      .select('*')
-      .order('recorded_at', { ascending: false });
-    if (error) throw error;
-    return data as OperationalMetric[];
+  async getMetrics(): Promise<OperationalMetric[]> {
+    const q = query(operationsCol(), orderBy('recorded_at', 'desc'));
+    const snap = await getDocs(q);
+    return snap.docs.map(d => ({ id: d.id, ...d.data() } as OperationalMetric));
   },
 };
 
@@ -114,24 +111,19 @@ export const operationsApi = {
 
 export const dashboardApi = {
   async getOverview(): Promise<DashboardOverview> {
-    const [inventoryRes, operationsRes, transactionsRes, alertsRes] = await Promise.all([
-      supabase.from('inventory_items').select('*'),
-      supabase.from('operations').select('*'),
-      supabase.from('inventory_transactions').select('*, item:inventory_items(*)').order('created_at', { ascending: false }).limit(10),
-      supabase.from('stock_alerts').select('*, item:inventory_items(*)').order('created_at', { ascending: false }).limit(5),
+    const [inventorySnap, operationsSnap] = await Promise.all([
+      getDocs(inventoryCol()),
+      getDocs(operationsCol()),
     ]);
 
-    const inventory = inventoryRes.data ?? [];
-    const operations = operationsRes.data ?? [];
-    const transactions = transactionsRes.data ?? [];
-    const alerts = alertsRes.data ?? [];
+    const inventory = inventorySnap.docs.map(d => d.data());
+    const operations = operationsSnap.docs.map(d => d.data());
 
-    // Calculate KPIs from real data
     const totalItems = inventory.length;
-    const totalValue = inventory.reduce((sum, item) => sum + (item.current_stock * item.unit_cost), 0);
-    const lowStockItems = inventory.filter((item) => item.current_stock <= item.reorder_level).length;
+    const totalValue = inventory.reduce((sum, item: any) => sum + (item.current_stock * item.unit_cost), 0);
+    const lowStockItems = inventory.filter((item: any) => item.current_stock <= item.reorder_level).length;
     const avgEfficiency = operations.length > 0
-      ? operations.reduce((sum, op) => sum + (op.value || 0), 0) / operations.length
+      ? operations.reduce((sum, op: any) => sum + (op.value || 0), 0) / operations.length
       : 0;
 
     return {
@@ -141,8 +133,8 @@ export const dashboardApi = {
         { name: 'Low Stock Alerts', value: lowStockItems, unit: 'items', change: 0, trend: lowStockItems > 0 ? 'down' : 'stable' },
         { name: 'Avg Efficiency', value: Math.round(avgEfficiency * 100) / 100, unit: '%', change: 0, trend: 'up' },
       ],
-      recent_transactions: transactions,
-      alerts: alerts,
+      recent_transactions: [],
+      alerts: [],
       charts: {
         inventory_value: [] as ChartDataPoint[],
         order_fulfillment: [] as ChartDataPoint[],
@@ -156,30 +148,19 @@ export const dashboardApi = {
 
 export const usersApi = {
   async getAll() {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .order('created_at', { ascending: false });
-    if (error) throw error;
-    return data;
+    const q = query(profilesCol(), orderBy('created_at', 'desc'));
+    const snap = await getDocs(q);
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
   },
 
   async updateRole(userId: string, role: string) {
-    const { data, error } = await supabase
-      .from('profiles')
-      .update({ role })
-      .eq('id', userId)
-      .select()
-      .single();
-    if (error) throw error;
-    return data;
+    const ref = doc(db, 'profiles', userId);
+    await updateDoc(ref, { role });
+    const snap = await getDoc(ref);
+    return { id: snap.id, ...snap.data() };
   },
 
   async delete(userId: string) {
-    const { error } = await supabase
-      .from('profiles')
-      .delete()
-      .eq('id', userId);
-    if (error) throw error;
+    await deleteDoc(doc(db, 'profiles', userId));
   },
 };

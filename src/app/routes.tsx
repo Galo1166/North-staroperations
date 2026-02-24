@@ -15,16 +15,27 @@ import Operations from './pages/Operations';
 import Admin from './pages/Admin';
 import { useAuth } from './lib/AuthContext';
 
+// Branded loading splash
+function LoadingSplash() {
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      <div className="size-14 rounded-xl bg-blue-600 flex items-center justify-center mb-4 animate-pulse">
+        <svg className="size-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+        </svg>
+      </div>
+      <h1 className="text-xl font-semibold text-gray-800 mb-1">Welcome to North Star Operations</h1>
+      <p className="text-sm text-muted-foreground">Loading your dashboard…</p>
+    </div>
+  );
+}
+
 // Protected route wrapper
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, loading } = useAuth();
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
-      </div>
-    );
+    return <LoadingSplash />;
   }
 
   if (!isAuthenticated) {
@@ -38,11 +49,7 @@ function AdminRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, canAccessAdmin, loading } = useAuth();
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
-      </div>
-    );
+    return <LoadingSplash />;
   }
 
   if (!isAuthenticated) {

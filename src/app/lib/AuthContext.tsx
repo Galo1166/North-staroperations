@@ -34,21 +34,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Build app User from Firebase auth user + Firestore profile (if available)
-  const buildUser = useCallback(async (firebaseUser: FirebaseUser): Promise<User> => {
-    // Try Firestore profiles collection first
-    try {
-      const profileRef = doc(db, 'profiles', firebaseUser.uid);
-      const profileSnap = await getDoc(profileRef);
-
-      if (profileSnap.exists()) {
-        return profileSnap.data() as User;
-      }
-    } catch {
-      // profiles collection likely doesn't exist — that's fine
-    }
-
-    // Fallback: build user from Firebase auth data
+  // Build a quick user object from Firebase auth (no network calls)
+  const buildUserFast = useCallback((firebaseUser: FirebaseUser): User => {
     const email = firebaseUser.email ?? '';
     return {
       id: firebaseUser.uid,
@@ -60,29 +47,51 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  // Initialize: listen for auth state changes
+  // Optionally enrich user from Firestore profile (runs in background after initial load)
+  const enrichFromFirestore = useCallback(async (firebaseUser: FirebaseUser) => {
+    try {
+      const profileRef = doc(db, 'profiles', firebaseUser.uid);
+      const profileSnap = await getDoc(profileRef);
+      if (profileSnap.exists()) {
+        setUser(profileSnap.data() as User);
+      }
+    } catch {
+      // profiles collection not available — keep the fast-built user
+    }
+  }, []);
+
+  // Initialize: listen for auth state changes — resolve loading ASAP
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+    // Safety timeout: never show loading for more than 1.5s
+    const timeout = setTimeout(() => setLoading(false), 1500);
+
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       if (firebaseUser) {
-        const profile = await buildUser(firebaseUser);
-        setUser(profile);
+        // Set user instantly from auth data (no async)
+        setUser(buildUserFast(firebaseUser));
+        setLoading(false);
+        // Enrich in background (non-blocking)
+        enrichFromFirestore(firebaseUser);
       } else {
         setUser(null);
+        setLoading(false);
       }
-      setLoading(false);
     });
 
-    return () => unsubscribe();
-  }, [buildUser]);
+    return () => {
+      clearTimeout(timeout);
+      unsubscribe();
+    };
+  }, [buildUserFast, enrichFromFirestore]);
 
   // Login
   const login = useCallback(async (email: string, password: string) => {
     const { user: firebaseUser } = await signInWithEmailAndPassword(auth, email, password);
 
-    // Build and set user immediately so navigation works
-    const profile = await buildUser(firebaseUser);
-    setUser(profile);
-  }, [buildUser]);
+    // Set user instantly so navigation works, enrich in background
+    setUser(buildUserFast(firebaseUser));
+    enrichFromFirestore(firebaseUser);
+  }, [buildUserFast, enrichFromFirestore]);
 
   // Signup — stores name/role in Firestore profiles collection
   const signup = useCallback(async (email: string, password: string, name: string, role: UserRole = 'viewer') => {

@@ -6,11 +6,11 @@ import { Button } from '../components/ui/button';
 import { mockDashboardOverview } from '../lib/mockData';
 import { AlertTriangle, ArrowRight, Package, TrendingUp } from 'lucide-react';
 import { useNavigate } from 'react-router';
-import { getCurrentUser } from '../lib/auth';
+import { useAuth } from '../lib/AuthContext';
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const user = getCurrentUser();
+  const { user } = useAuth();
   const data = mockDashboardOverview;
 
   return (
