@@ -46,11 +46,11 @@ export function ErrorBoundary() {
             Go to Home
           </Button>
           <Button
-            onClick={() => window.location.href = '/login'}
+            onClick={() => window.location.href = '/contact'}
             variant="outline"
             className="w-full"
           >
-            Go to Login
+            Get Started
           </Button>
         </div>
 

@@ -60,8 +60,8 @@ export function Navbar() {
 
         {/* Right side */}
         <div className="flex items-center gap-4">
-          <Button onClick={() => navigate('/login')} size="sm">
-            Login
+          <Button onClick={() => navigate('/contact')} size="sm">
+            Get Started
           </Button>
 
           {/* Mobile Menu */}

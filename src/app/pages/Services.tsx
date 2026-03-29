@@ -9,7 +9,6 @@ import {
   Activity,
   Users,
   Shield,
-  Zap,
   TrendingUp,
   Lock,
   LineChart,
@@ -88,9 +87,9 @@ export default function Services() {
       description: 'Dedicated support team available round the clock',
     },
     {
-      icon: Zap,
-      title: 'API Access',
-      description: 'Build custom integrations with our robust API',
+      icon: Package,
+      title: 'Offline Services',
+      description: 'Access our services even without internet connectivity',
     },
     {
       icon: LineChart,
@@ -144,7 +143,7 @@ export default function Services() {
           <motion.div variants={buttonVariants}>
             <Button
               size="lg"
-              onClick={() => navigate('/login')}
+              onClick={() => navigate('/contact')}
               className="gap-2 bg-blue-600 hover:bg-blue-700 mx-auto"
             >
               Get Started Today
@@ -330,7 +329,64 @@ export default function Services() {
         </motion.div>
       </section>
 
-   
+      {/* Partners */}
+      <section className="bg-gray-50 py-20 border-t">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            className="text-center mb-16"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={containerVariants}
+          >
+            <motion.h2
+              className="text-3xl sm:text-4xl font-bold mb-4"
+              variants={headingVariants}
+            >
+              Trusted Partners
+            </motion.h2>
+            <motion.p
+              className="text-gray-600 max-w-2xl mx-auto"
+              variants={textVariants}
+            >
+              We partner with leading companies to deliver the best solutions for your business
+            </motion.p>
+          </motion.div>
+
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-center max-w-4xl mx-auto"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={containerVariants}
+          >
+            {[
+              { name: 'MSOILANDGAS', logo: 'MSOIL', description: 'Leaders in crude oil import & export, petroleum import & export and energy security', website: 'https://msoilandgas.com' },
+              { name: 'MS Logistics', logo: 'MSL', description: 'Comprehensive logistics solutions including transportation, warehousing, and supply chain management', website: '#' },
+              { name: 'Azatech', logo: 'AZA', description: 'Experts in outsourcing and human resource management solutions', website: 'https://azatech.com.ng' },
+            ].map((partner) => (
+              <motion.a
+                key={partner.name}
+                href={partner.website}
+                target={partner.website !== '#' ? '_blank' : undefined}
+                rel={partner.website !== '#' ? 'noopener noreferrer' : undefined}
+                variants={cardVariants}
+                className="flex flex-col items-center justify-center p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow text-center cursor-pointer"
+              >
+                <div className="text-xl font-bold text-gray-600 mb-2">
+                  {partner.logo}
+                </div>
+                <div className="text-sm font-medium text-gray-800 mb-1">
+                  {partner.name}
+                </div>
+                <div className="text-xs text-gray-600">
+                  {partner.description}
+                </div>
+              </motion.a>
+            ))}
+          </motion.div>
+        </div>
+      </section>
 
       {/* How It Works */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t">
@@ -412,11 +468,11 @@ export default function Services() {
           <motion.div variants={buttonVariants}>
             <Button
               size="lg"
-              onClick={() => navigate('/login')}
+              onClick={() => navigate('/contact')}
               variant="secondary"
               className="gap-2"
             >
-              Start Free Trial
+              Get Started
               <ArrowRight className="size-5" />
             </Button>
           </motion.div>

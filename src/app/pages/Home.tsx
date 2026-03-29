@@ -113,7 +113,7 @@ export default function Home() {
               <motion.div variants={buttonVariants}>
                 <Button
                   size="lg"
-                  onClick={() => navigate('/login')}
+                  onClick={() => navigate('/contact')}
                   className="gap-2 bg-blue-600 hover:bg-blue-700 w-full sm:w-auto"
                 >
                   Get Started
@@ -351,11 +351,11 @@ export default function Home() {
           </p>
           <Button
             size="lg"
-            onClick={() => navigate('/login')}
+            onClick={() => navigate('/contact')}
             variant="secondary"
             className="gap-2"
           >
-            Login to Dashboard
+            Get Started
             <ArrowRight className="size-5" />
           </Button>
         </div>

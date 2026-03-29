@@ -167,7 +167,7 @@ export default function About() {
           </p>
           <Button
             size="lg"
-            onClick={() => navigate('/login')}
+            onClick={() => navigate('/contact')}
             variant="secondary"
             className="gap-2"
           >
