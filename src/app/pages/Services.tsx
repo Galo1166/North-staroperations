@@ -388,62 +388,6 @@ export default function Services() {
         </div>
       </section>
 
-      {/* How It Works */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t">
-        <motion.div
-          className="text-center mb-16"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={containerVariants}
-        >
-          <motion.h2
-            className="text-3xl sm:text-4xl font-bold mb-4"
-            variants={headingVariants}
-          >
-            How It Works
-          </motion.h2>
-          <motion.p
-            className="text-gray-600 max-w-2xl mx-auto"
-            variants={textVariants}
-          >
-            Get started in just a few simple steps
-          </motion.p>
-        </motion.div>
-
-        <motion.div
-          className="grid md:grid-cols-4 gap-6"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          variants={containerVariants}
-        >
-          {[
-            { step: 1, title: 'Sign Up', description: 'Create your account in minutes' },
-            { step: 2, title: 'Configure', description: 'Set up dashboards and integrations' },
-            { step: 3, title: 'Connect', description: 'Link your data sources' },
-            { step: 4, title: 'Monitor', description: 'Start tracking and analyzing' },
-          ].map((item) => (
-            <motion.div key={item.step} className="relative" variants={cardVariants}>
-              <Card>
-                <CardContent className="pt-8 text-center space-y-3">
-                  <div className="size-10 rounded-full bg-blue-600 text-white flex items-center justify-center mx-auto font-bold text-lg">
-                    {item.step}
-                  </div>
-                  <h3 className="font-semibold text-lg">{item.title}</h3>
-                  <p className="text-gray-600 text-sm">{item.description}</p>
-                </CardContent>
-              </Card>
-              {item.step < 4 && (
-                <div className="hidden md:block absolute top-1/2 -right-6 transform -translate-y-1/2">
-                  <ArrowRight className="size-5 text-blue-600" />
-                </div>
-              )}
-            </motion.div>
-          ))}
-        </motion.div>
-      </section>
-
       {/* CTA */}
       <section className="bg-gradient-to-r from-blue-600 to-purple-600 py-16 sm:py-20 border-t">
         <motion.div
