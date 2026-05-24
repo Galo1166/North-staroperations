@@ -29,7 +29,7 @@ export default function Privacy() {
             <section>
               <h2 className="text-2xl font-semibold mb-4">3. Data Security</h2>
               <p className="text-gray-600 leading-relaxed">
-                We implement industry-standard security measures to protect your data, including encryption in transit and at rest, role-based access controls, and regular security audits. Our platform uses Firebase Authentication for secure identity management.
+                We implement industry-standard security measures to protect your data, including encryption in transit and at rest, role-based access controls, and regular security audits. Account access is handled locally in this demo build.
               </p>
             </section>
 

@@ -5,8 +5,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { NorthStarLogo } from '../components/NorthStarLogo';
-import { sendPasswordResetEmail } from 'firebase/auth';
-import { auth } from '../lib/firebase';
+import { useAuth } from '../lib/AuthContext';
 import { Mail, ArrowLeft, CheckCircle2, Home } from 'lucide-react';
 
 export default function ForgotPassword() {
@@ -14,6 +13,7 @@ export default function ForgotPassword() {
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState('');
+  const { sendPasswordReset } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,15 +21,11 @@ export default function ForgotPassword() {
     setError('');
 
     try {
-      await sendPasswordResetEmail(auth, email);
+      await sendPasswordReset(email);
       setSent(true);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Failed to send reset email';
-      if (msg.includes('user-not-found')) {
-        setError('No account found with this email address.');
-      } else {
-        setError(msg);
-      }
+      setError(msg);
     } finally {
       setLoading(false);
     }

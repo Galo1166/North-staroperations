@@ -11,8 +11,6 @@ import {
 } from '../ui/dropdown-menu';
 import { Badge } from '../ui/badge';
 import { useAuth } from '../../lib/AuthContext';
-import { auth } from '../../lib/firebase';
-import { signOut } from 'firebase/auth';
 import { NorthStarLogo } from '../NorthStarLogo';
 import {
   LayoutDashboard,
@@ -39,14 +37,12 @@ const adminNavigation = [
 export function DashboardLayout() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, canAccessAdmin } = useAuth();
+  const { user, canAccessAdmin, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleLogout = (e: React.MouseEvent) => {
     e.preventDefault();
-    // Sign out in background — don't await or update React state
-    signOut(auth).catch(() => {});
-    // Navigate like a normal link — no React re-render, no flash
+    logout().catch(() => {});
     window.location.href = '/';
   };
 

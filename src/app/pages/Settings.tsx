@@ -6,13 +6,11 @@ import { Label } from '../components/ui/label';
 import { Badge } from '../components/ui/badge';
 import { Separator } from '../components/ui/separator';
 import { useAuth } from '../lib/AuthContext';
-import { updateProfile, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from 'firebase/auth';
-import { auth } from '../lib/firebase';
 import { toast } from 'sonner';
 import { User, Shield, Lock, Save } from 'lucide-react';
 
 export default function Settings() {
-  const { user } = useAuth();
+  const { user, updateProfile, updatePassword } = useAuth();
   const [displayName, setDisplayName] = useState(user?.name ?? '');
   const [saving, setSaving] = useState(false);
 
@@ -22,10 +20,9 @@ export default function Settings() {
   const [changingPassword, setChangingPassword] = useState(false);
 
   const handleUpdateProfile = async () => {
-    if (!auth.currentUser) return;
     setSaving(true);
     try {
-      await updateProfile(auth.currentUser, { displayName });
+      await updateProfile(displayName);
       toast.success('Profile updated successfully');
     } catch {
       toast.error('Failed to update profile');
@@ -35,8 +32,6 @@ export default function Settings() {
   };
 
   const handleChangePassword = async () => {
-    if (!auth.currentUser || !auth.currentUser.email) return;
-
     if (newPassword !== confirmPassword) {
       toast.error('New passwords do not match');
       return;
@@ -48,9 +43,7 @@ export default function Settings() {
 
     setChangingPassword(true);
     try {
-      const credential = EmailAuthProvider.credential(auth.currentUser.email, currentPassword);
-      await reauthenticateWithCredential(auth.currentUser, credential);
-      await updatePassword(auth.currentUser, newPassword);
+      await updatePassword(currentPassword, newPassword);
       toast.success('Password changed successfully');
       setCurrentPassword('');
       setNewPassword('');

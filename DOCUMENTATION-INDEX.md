@@ -126,7 +126,7 @@ Complete guide to all documentation files in this project.
   - Vercel (recommended)
   - Netlify
   - GitHub Pages
-  - Firebase
+    - Local demo auth
   - AWS S3 + CloudFront
   - Docker
   - Railway

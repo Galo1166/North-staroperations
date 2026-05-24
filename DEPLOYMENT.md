@@ -143,47 +143,6 @@ Free hosting directly from your GitHub repository.
 
 ---
 
-## 🔥 Option 4: Firebase Hosting
-
-Google's hosting solution with great performance.
-
-### Steps:
-
-1. **Install Firebase CLI:**
-   ```bash
-   npm install -g firebase-tools
-   ```
-
-2. **Login to Firebase:**
-   ```bash
-   firebase login
-   ```
-
-3. **Initialize Firebase:**
-   ```bash
-   firebase init hosting
-   ```
-   - Choose existing project or create new
-   - Public directory: `dist`
-   - Single-page app: `Yes`
-   - GitHub integration: Optional
-
-4. **Build and Deploy:**
-   ```bash
-   pnpm build
-   firebase deploy
-   ```
-
-**Features:**
-- CDN hosting
-- SSL certificates
-- Custom domains
-- Integration with Firebase services
-
-**Cost:** Free tier available
-
----
-
 ## ☁️ Option 5: AWS S3 + CloudFront
 
 Enterprise-grade hosting with AWS.

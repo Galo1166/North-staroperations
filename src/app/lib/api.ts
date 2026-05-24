@@ -1,53 +1,43 @@
-import { db } from './firebase';
 import {
-  collection,
-  doc,
-  getDocs,
-  getDoc,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-  query,
-  where,
-  orderBy,
-  limit,
-  Timestamp,
-} from 'firebase/firestore';
+  mockAllUsers,
+  mockDashboardOverview,
+  mockInventoryItems,
+  mockOperationalMetrics,
+} from './mockData';
 import type { InventoryItem, OperationalMetric, DashboardOverview, ChartDataPoint } from './types';
 
-// ─── Inventory API ──────────────────────────────────────────────
+let inventoryStore = [...mockInventoryItems];
+let operationsStore = [...mockOperationalMetrics];
+let usersStore = [...mockAllUsers];
 
-const inventoryCol = () => collection(db, 'inventory_items');
-const operationsCol = () => collection(db, 'operations');
-const profilesCol = () => collection(db, 'profiles');
+const clone = <T,>(value: T): T => JSON.parse(JSON.stringify(value));
 
 export const inventoryApi = {
   async getAll(): Promise<InventoryItem[]> {
-    const q = query(inventoryCol(), orderBy('created_at', 'desc'));
-    const snap = await getDocs(q);
-    return snap.docs.map(d => ({ id: d.id, ...d.data() } as InventoryItem));
+    return clone(inventoryStore);
   },
 
   async getById(id: string): Promise<InventoryItem> {
-    const snap = await getDoc(doc(db, 'inventory_items', id));
-    if (!snap.exists()) throw new Error('Item not found');
-    return { id: snap.id, ...snap.data() } as InventoryItem;
+    const item = inventoryStore.find((candidate) => candidate.id === id);
+    if (!item) throw new Error('Item not found');
+    return clone(item);
   },
 
   async create(item: Omit<InventoryItem, 'id'>): Promise<InventoryItem> {
-    const docRef = await addDoc(inventoryCol(), item);
-    return { id: docRef.id, ...item } as InventoryItem;
+    const createdItem = { id: `item-${Date.now()}`, ...item } as InventoryItem;
+    inventoryStore = [createdItem, ...inventoryStore];
+    return clone(createdItem);
   },
 
   async update(id: string, updates: Partial<InventoryItem>): Promise<InventoryItem> {
-    const ref = doc(db, 'inventory_items', id);
-    await updateDoc(ref, updates);
-    const snap = await getDoc(ref);
-    return { id: snap.id, ...snap.data() } as InventoryItem;
+    inventoryStore = inventoryStore.map((item) => (item.id === id ? { ...item, ...updates } : item));
+    const updatedItem = inventoryStore.find((item) => item.id === id);
+    if (!updatedItem) throw new Error('Item not found');
+    return clone(updatedItem);
   },
 
   async delete(id: string): Promise<void> {
-    await deleteDoc(doc(db, 'inventory_items', id));
+    inventoryStore = inventoryStore.filter((item) => item.id !== id);
   },
 
   async search(searchQuery: string): Promise<InventoryItem[]> {
@@ -68,10 +58,7 @@ export const inventoryApi = {
 
 export const operationsApi = {
   async getAll(filters?: { department?: string; dateRange?: string }): Promise<OperationalMetric[]> {
-    let q = query(operationsCol(), orderBy('created_at', 'desc'));
-
-    const snap = await getDocs(q);
-    let results = snap.docs.map(d => ({ id: d.id, ...d.data() } as OperationalMetric));
+    let results = clone(operationsStore);
 
     // Client-side filtering (Firestore compound queries require indexes)
     if (filters?.department && filters.department !== 'all') {
@@ -101,9 +88,7 @@ export const operationsApi = {
   },
 
   async getMetrics(): Promise<OperationalMetric[]> {
-    const q = query(operationsCol(), orderBy('recorded_at', 'desc'));
-    const snap = await getDocs(q);
-    return snap.docs.map(d => ({ id: d.id, ...d.data() } as OperationalMetric));
+    return clone(operationsStore);
   },
 };
 
@@ -111,36 +96,7 @@ export const operationsApi = {
 
 export const dashboardApi = {
   async getOverview(): Promise<DashboardOverview> {
-    const [inventorySnap, operationsSnap] = await Promise.all([
-      getDocs(inventoryCol()),
-      getDocs(operationsCol()),
-    ]);
-
-    const inventory = inventorySnap.docs.map(d => d.data());
-    const operations = operationsSnap.docs.map(d => d.data());
-
-    const totalItems = inventory.length;
-    const totalValue = inventory.reduce((sum, item: any) => sum + (item.current_stock * item.unit_cost), 0);
-    const lowStockItems = inventory.filter((item: any) => item.current_stock <= item.reorder_level).length;
-    const avgEfficiency = operations.length > 0
-      ? operations.reduce((sum, op: any) => sum + (op.value || 0), 0) / operations.length
-      : 0;
-
-    return {
-      kpis: [
-        { name: 'Total Inventory Items', value: totalItems, unit: 'items', change: 0, trend: 'stable' },
-        { name: 'Inventory Value', value: totalValue, unit: '$', change: 0, trend: 'up' },
-        { name: 'Low Stock Alerts', value: lowStockItems, unit: 'items', change: 0, trend: lowStockItems > 0 ? 'down' : 'stable' },
-        { name: 'Avg Efficiency', value: Math.round(avgEfficiency * 100) / 100, unit: '%', change: 0, trend: 'up' },
-      ],
-      recent_transactions: [],
-      alerts: [],
-      charts: {
-        inventory_value: [] as ChartDataPoint[],
-        order_fulfillment: [] as ChartDataPoint[],
-        operational_efficiency: [] as ChartDataPoint[],
-      },
-    };
+    return clone(mockDashboardOverview);
   },
 };
 
@@ -148,19 +104,17 @@ export const dashboardApi = {
 
 export const usersApi = {
   async getAll() {
-    const q = query(profilesCol(), orderBy('created_at', 'desc'));
-    const snap = await getDocs(q);
-    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    return clone(usersStore);
   },
 
   async updateRole(userId: string, role: string) {
-    const ref = doc(db, 'profiles', userId);
-    await updateDoc(ref, { role });
-    const snap = await getDoc(ref);
-    return { id: snap.id, ...snap.data() };
+    usersStore = usersStore.map((user) => (user.id === userId ? { ...user, role: role as any } : user));
+    const updatedUser = usersStore.find((user) => user.id === userId);
+    if (!updatedUser) throw new Error('User not found');
+    return clone(updatedUser);
   },
 
   async delete(userId: string) {
-    await deleteDoc(doc(db, 'profiles', userId));
+    usersStore = usersStore.filter((user) => user.id !== userId);
   },
 };

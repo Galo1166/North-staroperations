@@ -351,7 +351,7 @@ export const api = {
 
 ### Recommended Backend Options:
 - **Supabase** - Postgres + Auth + Real-time (easiest)
-- **Firebase** - NoSQL + Auth + Hosting
+- **Local demo auth** - Mock sessions and in-memory data for the hosted preview
 - **Node.js + Express** - Custom API
 - **Django/FastAPI** - Python backend
 - **Laravel** - PHP backend
